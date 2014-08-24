@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require "socket"
 class TastyNoodles
   def test
     #Process.daemon
@@ -7,7 +8,11 @@ class TastyNoodles
     puts RUBY_VERSION
   end
   def work
+    server = TCPServer.new 2000 #<-- bind to port 2000
     while true
+      client = server.accept
+      client.puts "Hello World"
+      client.close
       sleep 2
     end
   end
@@ -39,11 +44,11 @@ def my_puts(message)
 end
 
 def start
-  
   Process.daemon(true) # <-- true means stay in the current directory
   # Note that you must write the pid to file AFTER creating the daemon, or else you won't
   # have the daemon's pid.
   if write_pid
+    File.open("./status", "w") { |f| f.write "So tasty.\n" }
     tasty = TastyNoodles.new
     tasty.work
   else
@@ -53,6 +58,9 @@ def start
 end 
 def stop
   Process.kill("SIGTERM", read_pid.to_i)
+end
+def status
+  puts "#{File.read("./status")}"
 end
 
 case ARGV[0]
