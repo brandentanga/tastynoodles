@@ -1,1 +1,2 @@
 alias tasty="./tastynoodles.rb"
+alias tel="telnet localhost 2000"

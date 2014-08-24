@@ -8,12 +8,15 @@ class TastyNoodles
     puts RUBY_VERSION
   end
   def work
-    server = TCPServer.new 2000 #<-- bind to port 2000
-    while true
-      client = server.accept
-      client.puts "Hello World"
-      client.close
-      sleep 2
+    server = TCPServer.new "localhost", 2000 #<-- bind to port 2000
+    loop do 
+      Thread.start(server.accept) do |client|
+        client.puts "Hello World"
+        message = client.gets.chomp
+        client.puts "You just entered #{message}. Do a tasty status to see your message."
+        File.open("./status", "w") { |f| f.write("#{message}\n") }
+        client.close
+      end
     end
   end
 end
@@ -70,6 +73,13 @@ when "stop"
   stop
 when "status"
   status
+when "who"
+  puts "#{`ps aux | grep tasty`}"
+when "restart"
+  stop
+  start
+when "test"
+  `telnet localhost 2000`
 else
-  "command not recognized"
+  puts "Command not recognized. Not tasty."
 end
