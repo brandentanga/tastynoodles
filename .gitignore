@@ -1,2 +1,5 @@
+## project file for textmate
 *.tmproj
+
+## local file that stores the PID used by tastynoodles.
 PID
