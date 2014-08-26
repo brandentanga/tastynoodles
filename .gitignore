@@ -3,3 +3,6 @@
 
 ## local file that stores the PID used by tastynoodles.
 PID
+
+## file that is used for local testing
+index.html
