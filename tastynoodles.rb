@@ -27,46 +27,50 @@ class TastyNoodles
     server = TCPServer.new "localhost", 2000 #<-- bind to port 2000
     loop do 
       Thread.start(server.accept) do |client|
-        message = client.gets.chomp.split(" ")
+        request = client.gets.chomp.split(" ")
         #interact_by_telnet client
-        type = message[0]
+        type = request[0]
         case type
-        when "GET"
-          #response = @hardcoded_response + '\r\n\r\n' + do_get(message)
-          #client.print do_get(message) #<-- this works, but it has no header???
-          response = do_get(message)
+        when "GET"  
+          # Error 405 method not allowed if it is a valid request type that is not allowed
+          # for this resource
+          #response = @hardcoded_response + '\r\n\r\n' + do_get(request)
+          #client.print do_get(request) #<-- this works, but it has no header???
+          response = do_get(request)
           client.print "HTTP/1.1 200 OK\r\n" +
                         "Content-Type: text/html\r\n" +
                         "Content-Length: #{response.bytesize}\r\n" +
                         "Connection: close\r\n\r\n" +
                         response
-          log "what"
+          log "GET #{request[1]}"
         else
-          # not a valid message type. What to do here?
-          log "not a valid message type"
+          # not a valid request type. What to do here?
+          # Error 501 not implemented if it is an unknown or unimplemented request type
+          log "Error 501, not a valid request type"
+          client.print
         end
         client.close
       end
     end
   end
-  def do_get(message)
+  def do_get(request)
     # if this is valid, then proceed
     # for the line below, is Host optional in HTTP???
-    #if message[2] == "HTTP/1.1" && message[3] == "Host:"
-    if message[2] == "HTTP/1.1"
-      url = message[1]
+    #if request[2] == "HTTP/1.1" && request[3] == "Host:"
+    if request[2] == "HTTP/1.1"
+      url = request[1]
       url = url[1, url.length] if url.start_with? "/" # strip leading /
       return File.read(url)
     else
-      log message
+      log request
       return "Throw an error from do_get"
     end
   end
   def interact_by_telnet(client)
       client.puts "Hello World"
-      message = client.gets.chomp
-      client.puts "You just entered #{message}. Do a tasty status to see your message."
-      File.open("./status", "w") { |f| f.write("#{message}\n") }
+      request = client.gets.chomp
+      client.puts "You just entered #{request}. Do a tasty status to see your request."
+      File.open("./status", "w") { |f| f.write("#{request}\n") }
   end
 end
 
