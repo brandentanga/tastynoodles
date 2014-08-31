@@ -34,9 +34,7 @@ class TastyNoodles
         when "HEAD"
           log "Error 405, method not allowed"
           client.print generate_http_error_message(:e405)
-        when "GET"  
-          # Error 405 method not allowed if it is a valid request type that is not allowed
-          # for this resource
+        when "GET"
           #response = @hardcoded_response + '\r\n\r\n' + do_get(request)
           #client.print do_get(request) #<-- this works, but it has no header???
           response = do_get(request)
