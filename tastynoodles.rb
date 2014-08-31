@@ -31,7 +31,10 @@ class TastyNoodles
         #interact_by_telnet client
         type = request[0]
         case type
-        when "ASDF"  
+        when "HEAD"
+          log "Error 405, method not allowed"
+          client.print generate_http_error_message(:e405)
+        when "GET"  
           # Error 405 method not allowed if it is a valid request type that is not allowed
           # for this resource
           #response = @hardcoded_response + '\r\n\r\n' + do_get(request)
@@ -43,6 +46,27 @@ class TastyNoodles
                         "Connection: close\r\n\r\n" +
                         response
           log "GET #{request[1]}"
+        when "OPTIONS"
+          log "Error 405, method not allowed"
+          client.print generate_http_error_message(:e405)
+        when "TRACE"
+          log "Error 405, method not allowed"
+          client.print generate_http_error_message(:e405)
+        when "POST"
+          log "Error 405, method not allowed"
+          client.print generate_http_error_message(:e405)
+        when "PUT"
+          log "Error 405, method not allowed"
+          client.print generate_http_error_message(:e405)
+        when "DELETE"
+          log "Error 405, method not allowed"
+          client.print generate_http_error_message(:e405)
+        when "TRACE"
+          log "Error 405, method not allowed"
+          client.print generate_http_error_message(:e405)
+        when "CONNECT"
+          log "Error 405, method not allowed"
+          client.print generate_http_error_message(:e405)
         else
           # not a valid request type. What to do here?
           # Error 501 not implemented if it is an unknown or unimplemented request type
@@ -70,6 +94,11 @@ class TastyNoodles
   def generate_http_error_message(type)
     # Note that ruby symbols cannot start with a digit, thus the 'e'
     case type
+    when :e405
+      return "HTTP/1.1 405 method not allowed. No tasty noodles for you. \r\n" +
+              "Connection: close\r\n\r\n" + 
+              generate_simple_html_page("405 method not allowed. No tasty noodles" + 
+              " for you. <br /><img src=http://i.imgur.com/ODaIazU.gif>")
     when :e501
       return "HTTP/1.1 501 Not a valid request type. No tasty noodles for you.\r\n" +
               "Connection: close\r\n\r\n" +
