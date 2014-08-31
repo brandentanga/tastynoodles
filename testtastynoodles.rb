@@ -41,4 +41,7 @@ class TestTastyNoodles < Minitest::Unit::TestCase
   def test_generate_simple_html_page
     skip "for now"
   end
+  def test_generate_http_error_message
+    skip "for now"
+  end
 end

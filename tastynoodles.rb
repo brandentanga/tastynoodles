@@ -4,7 +4,8 @@ class TastyNoodles
   def initialize
     # Right now, host is hard set. This should be something that is read from a config file
     @host = "localhost"
-    @hardcoded_response = 'HTTP/1.1 200 OK\r\n'+
+    @http_version = "HTTP/1.1"
+    @hardcoded_response = "#{@http_version} 200 OK\r\n" +
     'Date: Tue, 26 Aug 2014 22:38:34 GMT\r\n'+
     'Server: Tastynoodles/0.01 (OSX)\r\n'+
     'Last-Modified: Tue, 26 Aug 2014 23:11:55 GMT\r\n'+
@@ -15,7 +16,7 @@ class TastyNoodles
     'Connection: close'
   end
   def log(message)
-    File.open("./status", "a") { |f| f.write(message) }
+    File.open("./status", "a") { |f| f.write(message + "\n") }
   end
   def test
     #Process.daemon
@@ -38,11 +39,7 @@ class TastyNoodles
           #response = @hardcoded_response + '\r\n\r\n' + do_get(request)
           #client.print do_get(request) #<-- this works, but it has no header???
           response = do_get(request)
-          client.print "HTTP/1.1 200 OK\r\n" +
-                        "Content-Type: text/html\r\n" +
-                        "Content-Length: #{response.bytesize}\r\n" +
-                        "Connection: close\r\n\r\n" +
-                        response
+          client.print response
           log "GET #{request[1]}"
         when "OPTIONS"
           log "Error 405, method not allowed"
@@ -80,31 +77,47 @@ class TastyNoodles
     # if this is valid, then proceed
     # for the line below, is Host optional in HTTP???
     #if request[2] == "HTTP/1.1" && request[3] == "Host:"
-    if request[2] == "HTTP/1.1"
+    message = nil
+    if request[2] == @http_version
+      log "in if"
       url = request[1]
       url = url[1, url.length] if url.start_with? "/" # strip leading /
-      return File.read(url)
-    else
-      log request
-      return "Throw an error from do_get"
+      begin
+        message = File.read(url) # if not found, read returns nil
+        header = "HTTP/1.1 200 OK\r\n" +
+                  "Content-Type: text/html\r\n" +
+                  "Content-Length: #{message.bytesize}\r\n" + # message will not be nil if code has gotten this far
+                  "Connection: close\r\n\r\n"
+        return header + message
+      rescue Errno::ENOENT => e # File not found
+        log e.message
+        
+      end
+    else # error 505 http version not supported.
+      #log request
+      log "in else"
+      return generate_http_error_message(:e505)
     end
   end
   def generate_http_error_message(type)
     # Note that ruby symbols cannot start with a digit, thus the 'e'
     case type
+    when :e505
+      log "in e505"
+      return generate_simple_html_page_for_error "505 HTTP version not supported"
     when :e405
-      return "HTTP/1.1 405 method not allowed. No tasty noodles for you. \r\n" +
-              "Connection: close\r\n\r\n" + 
-              generate_simple_html_page("405 method not allowed. No tasty noodles" + 
-              " for you. <br /><img src=http://i.imgur.com/ODaIazU.gif>")
+      return generate_simple_html_page_for_error "405 Method not allowed"
     when :e501
-      return "HTTP/1.1 501 Not a valid request type. No tasty noodles for you.\r\n" +
-              "Connection: close\r\n\r\n" +
-              generate_simple_html_page("501 not a valid request type. No tasty noodles" +
-              " for you. <br /><img src=http://i.imgur.com/ODaIazU.gif>")
+      return generate_simple_html_page_for_error "501 Not a valid request type"
     else
       log "The server is trying to send an unknown http error message to the client. #{type}"
     end
+  end
+  def generate_simple_html_page_for_error(info_string)
+    return "#{@http_version} #{info_string}. No tasty noodles for you.\r\n" + 
+            "Connection: close\r\n\r\n" + 
+            generate_simple_html_page("#{info_string}. No tasty noodles for you." +
+            "<br /><img src=http://i.imgur.com/ODaIazU.gif>")
   end
   def generate_simple_html_page(content_of_body)
     return "<html><head></head><body>" + content_of_body + "</body></html>"
@@ -115,7 +128,8 @@ class TastyNoodles
       client.puts "You just entered #{request}. Do a tasty status to see your request."
       File.open("./status", "w") { |f| f.write("#{request}\n") }
   end
-end
+  
+end # end tastynoodles class
 
 def write_pid
   begin
