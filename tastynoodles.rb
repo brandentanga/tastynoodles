@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
 require "socket"
+
 class TastyNoodles
   def initialize
     # Right now, host is hard set. This should be something that is read from a config file
     @host = "localhost"
     @http_version = "HTTP/1.1"
+    @known_content_types = ["text/html", "text/javascript", "text/text", "image/jpg", "image/jpeg", "image/png", "image/gif"]
     @hardcoded_response = "#{@http_version} 200 OK\r\n" +
     'Date: Tue, 26 Aug 2014 22:38:34 GMT\r\n'+
     'Server: Tastynoodles/0.01 (OSX)\r\n'+
@@ -75,19 +77,18 @@ class TastyNoodles
   end
   def do_get(request)
     # if this is valid, then proceed
-    # for the line below, is Host optional in HTTP???
-    #if request[2] == "HTTP/1.1" && request[3] == "Host:"
+    # Host is mandatory, and either Content-Length or Transfer-Encoding.
     message = nil
     if request[2] == @http_version
-      log "in if"
+      log "do_get request == #{request.to_s}"
       url = request[1]
       url = url[1, url.length] if url.start_with? "/" # strip leading /
       begin
         message = File.read(url) # if not found, read returns nil
-        header = "HTTP/1.1 200 OK\r\n" +
-                  "Content-Type: text/html\r\n" +
-                  "Content-Length: #{message.bytesize}\r\n" + # message will not be nil if code has gotten this far
+        header = "#{@http_version} 200 OK\r\n" +
+                  generate_common_response_header_fields(url, message) +
                   "Connection: close\r\n\r\n"
+        log header + message
         return header + message
       rescue Errno::ENOENT => e # File not found
         log e.message
@@ -98,6 +99,22 @@ class TastyNoodles
       log "in else"
       return generate_http_error_message(:e505)
     end
+  end
+  
+  # Generate the header fields used across all response headers
+  def generate_common_response_header_fields(url, message)
+    content_type = url[url.rindex("."), url.length] if url.include?(".")
+    content_type ||= "root" # if there's no .html for example url rewrite engine will solve this
+    length_or_encoding = :content_length
+    #insert_me = (length_or_encoding == :content_length ? "Content-Length: #{message.bytesize}\r\n\r\n")
+    return "Date: #{Time.now.utc.strftime("%a, %d %b %Y %H:%M:%S GMT")}\r\n" + 
+            "Server: TastyNoodles/0.1\r\n" +
+            "Content-Type: #{@known_content_types.find_index(content_type) != nil ? content_type : "unknown" }\r\n" + 
+            (length_or_encoding == :content_length ? "Content-Length: #{message.bytesize}" : "Transfer-Encoding: #{message.to_s}") +
+            "\r\n"
+  end
+  def match_content_type_against_known_types(type)
+    
   end
   def generate_http_error_message(type)
     # Note that ruby symbols cannot start with a digit, thus the 'e'
