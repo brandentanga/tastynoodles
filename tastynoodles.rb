@@ -35,8 +35,11 @@ class TastyNoodles
         type = request[0]
         case type
         when "HEAD"
-          log "Error 405, method not allowed"
-          client.print generate_http_error_message(:e405)
+          #log "Error 405, method not allowed"
+          #client.print generate_http_error_message(:e405)
+          response = do_head(request)
+          client.print response
+          log "HEAD #{request[1]}"
         when "GET"
           #response = @hardcoded_response + '\r\n\r\n' + do_get(request)
           #client.print do_get(request) #<-- this works, but it has no header???
@@ -75,7 +78,10 @@ class TastyNoodles
       end
     end
   end
-  def do_get(request)
+  def do_head(request)
+    do_get(request, :head)
+  end
+  def do_get(request, get_or_head = :get)
     # if this is valid, then proceed
     # Host is mandatory, and either Content-Length or Transfer-Encoding.
     message = nil
@@ -89,7 +95,8 @@ class TastyNoodles
                   generate_common_response_header_fields(url, message) +
                   "Connection: close\r\n\r\n"
         log header + message
-        return header + message
+        #return header + message
+        return (get_or_head == :get ? header + message : header)
       rescue Errno::ENOENT => e # File not found
         log e.message
         return generate_http_error_message(:e404)
