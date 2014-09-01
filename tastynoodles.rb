@@ -92,7 +92,7 @@ class TastyNoodles
         return header + message
       rescue Errno::ENOENT => e # File not found
         log e.message
-        
+        return generate_http_error_message(:e404)
       end
     else # error 505 http version not supported.
       #log request
@@ -113,14 +113,12 @@ class TastyNoodles
             (length_or_encoding == :content_length ? "Content-Length: #{message.bytesize}" : "Transfer-Encoding: #{message.to_s}") +
             "\r\n"
   end
-  def match_content_type_against_known_types(type)
-    
-  end
   def generate_http_error_message(type)
     # Note that ruby symbols cannot start with a digit, thus the 'e'
     case type
+    when :e404
+      return generate_simple_html_page_for_error "404 Not found"
     when :e505
-      log "in e505"
       return generate_simple_html_page_for_error "505 HTTP version not supported"
     when :e405
       return generate_simple_html_page_for_error "405 Method not allowed"
