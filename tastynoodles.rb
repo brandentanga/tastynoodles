@@ -6,7 +6,7 @@ class TastyNoodles
     # Right now, host is hard set. This should be something that is read from a config file
     @host = "localhost"
     @http_version = "HTTP/1.1"
-    @known_content_types = ["text/html", "text/javascript", "text/text", "image/jpg", "image/jpeg", "image/png", "image/gif"]
+    @known_content_types = ["html", "javascript", "text", "jpg", "jpeg", "png", "gif"]
     @hardcoded_response = "#{@http_version} 200 OK\r\n" +
     'Date: Tue, 26 Aug 2014 22:38:34 GMT\r\n'+
     'Server: Tastynoodles/0.01 (OSX)\r\n'+
@@ -103,7 +103,7 @@ class TastyNoodles
   
   # Generate the header fields used across all response headers
   def generate_common_response_header_fields(url, message)
-    content_type = url[url.rindex("."), url.length] if url.include?(".")
+    content_type = url[url.rindex(".") + 1, url.length] if url.include?(".")
     content_type ||= "root" # if there's no .html for example url rewrite engine will solve this
     length_or_encoding = :content_length
     #insert_me = (length_or_encoding == :content_length ? "Content-Length: #{message.bytesize}\r\n\r\n")
