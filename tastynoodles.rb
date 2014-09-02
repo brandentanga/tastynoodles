@@ -1,6 +1,11 @@
 #!/usr/bin/env ruby
+
+# Author: Branden Tanga
+# Email: branden.tanga@gmail.com
 require "socket"
 
+# Tasty Noodles itself
+#
 class TastyNoodles
   def initialize
     # Right now, host is hard set. This should be something that is read from a config file
@@ -17,6 +22,10 @@ class TastyNoodles
     'Accept-Ranges: bytes\r\n'+
     'Connection: close'
   end
+  
+  # Custom logger, appends to the file 'status' in the tastynoodles directory.
+  # When the server exits, this file is overwritten.
+  #
   def log(message)
     File.open("./status", "a") { |f| f.write(message + "\n") }
   end
@@ -26,6 +35,9 @@ class TastyNoodles
     #puts Process.getpgrp
     return RUBY_VERSION
   end
+  
+  # The main method which loops indefinitely while tastynoodles is running.
+  #
   def work
     server = TCPServer.new "localhost", 2000 #<-- bind to port 2000
     loop do 
@@ -78,9 +90,17 @@ class TastyNoodles
       end
     end
   end
+  
+  # This method handles a head request. It is basically a pass through to do_get,
+  # since a head request is identical to a get, except that there is no content
+  # in a response to a head request. 
+  #
   def do_head(request)
     do_get(request, :head)
   end
+  
+  # This method handles a get request.
+  #
   def do_get(request, get_or_head = :get)
     # if this is valid, then proceed
     # Host is mandatory, and either Content-Length or Transfer-Encoding.
@@ -109,6 +129,7 @@ class TastyNoodles
   end
   
   # Generate the header fields used across all response headers
+  #
   def generate_common_response_header_fields(url, message)
     content_type = url[url.rindex(".") + 1, url.length] if url.include?(".")
     content_type ||= "root" # if there's no .html for example url rewrite engine will solve this
@@ -120,6 +141,10 @@ class TastyNoodles
             (length_or_encoding == :content_length ? "Content-Length: #{message.bytesize}" : "Transfer-Encoding: #{message.to_s}") +
             "\r\n"
   end
+  
+  # This method is responsible for generating markup for all http error messages to be
+  # sent back to the client.
+  #
   def generate_http_error_message(type)
     # Note that ruby symbols cannot start with a digit, thus the 'e'
     case type
@@ -135,15 +160,26 @@ class TastyNoodles
       log "The server is trying to send an unknown http error message to the client. #{type}"
     end
   end
+  
+  # This method simplifies the drudgery of creating markup for error pages that are 
+  # almost always nearly identical.
+  #
   def generate_simple_html_page_for_error(info_string)
     return "#{@http_version} #{info_string}. No tasty noodles for you.\r\n" + 
             "Connection: close\r\n\r\n" + 
             generate_simple_html_page("#{info_string}. No tasty noodles for you." +
             "<br /><img src=http://i.imgur.com/ODaIazU.gif>")
   end
+  
+  # This method generates html, head, and body tags for use in other methods.
+  #
   def generate_simple_html_page(content_of_body)
     return "<html><head></head><body>" + content_of_body + "</body></html>"
   end
+  
+  # A testing method which allows you to send and recieve simple messages
+  # through telnet
+  #
   def interact_by_telnet(client)
       client.puts "Hello World"
       request = client.gets.chomp
@@ -153,6 +189,11 @@ class TastyNoodles
   
 end # end tastynoodles class
 
+
+# This function writes the PID of the current tastynoodles process to a file
+# called PID in the tastynoodles directory. Tastynoodles uses this to know
+# which process to shutdown when tasty stop is executed.
+#
 def write_pid
   begin
     File.open("./PID", "w") { |f| f.write "#{Process.pid}" }
@@ -162,6 +203,10 @@ def write_pid
     return false
   end
 end
+
+# This function reads the PID file to get the process id of the current
+# tastynoodles daemon.
+#
 def read_pid
   pid = -1
   begin
@@ -172,12 +217,17 @@ def read_pid
   return pid
 end
 
+# This function temporarily redirects STDOUT to a terminal session, then returns
+# it to /dev/null
+#
 def my_puts(message)
   STDOUT.reopen $orig_stdout
   puts message
   STDOUT.reopen "/dev/null", "a"
 end
 
+# This function starts the tastynoodles daemon.
+#
 def start
   Process.daemon(true) # <-- true means stay in the current directory
   # Note that you must write the pid to file AFTER creating the daemon, or else you won't
@@ -191,10 +241,16 @@ def start
   end
 
 end 
+
+# This function stops the tastynoodles daemon
+#
 def stop
   Process.kill("SIGTERM", read_pid.to_i)
   File.open("./status", "w") { |f| f.write "Not tasty.\n" }
 end
+
+# This function reads the status file and outputs it to STDOUT
+#
 def status
   puts "#{File.read("./status")}"
 end
