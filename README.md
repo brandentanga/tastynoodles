@@ -4,7 +4,7 @@ Have a simple webserver implemented in Ruby, or eat some tasty noodles? Why not 
 Want to try Tastynoodles? Scroll down to "How do I eat Tastynoodles" below.
 
 ## No seriously, what's the deal with Tastynoodles?
-For my own edification, I wanted to write my own webserver. Tastynoodles is just a whimsical name I chose because I was hungry when I started this project.
+For my own edification, I wanted to write my own webserver. Tastynoodles is just a whimsical name I chose because I was hungry when I started this project. I started this project on ~ 2014-24-08.
 
 ## So it's a production quality webserver?
 **Absolutely Not**. Right now, I support the bare minimum of what is required to be a webserver under HTTP 1.1, which is surprisingly not much, just the ability to respond to HEAD and GET.
