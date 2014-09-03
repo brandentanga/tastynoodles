@@ -1,6 +1,8 @@
 ## About Tastynoodles
 Have a simple webserver implemented in Ruby, or eat some tasty noodles? Why not both?
 
+Want to try Tastynoodles? [Click here](https://github.com/brandentanga/tastynoodles#how-do-i-eat-tastynoodles).
+
 ## No seriously, what's the deal with Tastynoodles?
 For my own edification, I wanted to write my own webserver. Tastynoodles is just a whimsical name I chose because I was hungry when I started this project.
 
