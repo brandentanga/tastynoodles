@@ -5,7 +5,7 @@ class TestTastyNoodles < Minitest::Unit::TestCase
   def setup
     @tasty = TastyNoodles.new
     #@request = "GET /index.html HTTP/1.1\nHost: www.example.com"
-    @request = "GET /index.html HTTP/1.1\nHost: localhost".split(" ")
+    @request = "GET /index.html HTTP/1.1\r\nHost: localhost\r\n\r\n".split("\r\n\r\n")
     #@index = "<html>\n<head></head>\n<body>\nHello World\n</body>\n</html>\n"
     @index = "<html>\n<head></head>\n<body>\nHello World\n</body>\n</html>\n"
     @e501 = "HTTP/1.1 501 Not a valid request type. No tasty noodles for you.\r\n" +
@@ -68,5 +68,8 @@ class TestTastyNoodles < Minitest::Unit::TestCase
     random_fixnum = @tasty.generate_random_fixnum
     assert_kind_of Fixnum, random_fixnum
     assert(random_fixnum < 1000000000000000000)
+  end
+  def test_generate_session_cookie
+    skip "test_generate_session_cookie for now"
   end
 end

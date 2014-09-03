@@ -53,10 +53,11 @@ class TastyNoodles
       Thread.start(server.accept) do |client|
         temp = client.gets("\r\n\r\n")
         log "incoming request == " + temp
-        request = temp.chomp.split(" ")
+        request = temp.chomp.split("\r\n")
         #request = client.gets.chomp.split(" ") <-- switch back to this
         #interact_by_telnet client
-        type = request[0]
+        type = request[0].split(" ")[0]
+        log "type == #{type}"
         case type
         when "HEAD"
           response = do_head(request)
@@ -65,7 +66,7 @@ class TastyNoodles
         when "GET"
           response = do_get(request)
           client.print response
-          log "GET #{request[1]}"
+          log "GET #{request[0]}"
         when "OPTIONS"
           log "Error 405, method not allowed"
           client.print generate_http_error_message(:e405)
@@ -113,21 +114,23 @@ class TastyNoodles
     # if this is valid, then proceed
     # Host is mandatory, and either Content-Length or Transfer-Encoding.
     message = nil
-    if request[2] == @http_version
+    request_header = request[0].split(" ")
+    log "request_header == #{request_header}"
+    if request_header[2] == @http_version
       log "do_get request == #{request.to_s}"
-      url = request[1]
+      url = request_header[1]
       url = url[1, url.length] if url.start_with? "/" # strip leading /
       begin
         message = File.read(url) # if not found, read returns nil
-        header = "#{@http_version} 200 OK\r\n" +
+        response_header = "#{@http_version} 200 OK\r\n" +
                   generate_common_response_header_fields(url, message) +
                   # Domain, Path, Max-Age, Secure, and Expires
-                  "Set-Cookie: tastynoodles=true;\r\n" +
+                  #"Set-Cookie: tastynoodles=true;\r\n" +
                   #"Set-Cookie: visit_count=1;\r\n" + 
                   "Connection: close\r\n\r\n"
-        log "response == " + header + message
+        log "response == " + response_header + message
         #return header + message
-        return (get_or_head == :get ? header + message : header)
+        return (get_or_head == :get ? response_header + message : response_header)
       rescue Errno::ENOENT => e # File not found
         log e.message
         return generate_http_error_message(:e404)
@@ -188,10 +191,17 @@ class TastyNoodles
     return "<html><head></head><body>" + content_of_body + "</body></html>"
   end
   
+  # This method accepts a request as an array of parameters,
+  # and returns an array of cookies as a hash. A hash being unordered is acceptable,
+  # because per the http spec, cookies are supposed to be unordered.
+  def get_request_cookies(request)
+    
+  end
+  
   # This method generates the session cookie 
   #
   def generate_session_cookie
-    
+    return "tastynoodles=session_id:#{generate_random_fixnum}"
   end
   
   # This method generates a random fixnum that is near the maximum size of
