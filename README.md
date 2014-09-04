@@ -43,6 +43,9 @@ For my own edification, I wanted to write my own webserver. Tastynoodles is just
 ## Don't you know that the Ruby Standard Library has packages that basically write a webserver FOR you? Why not use all those?
 Yes, I use some of them, like Process.daemon, and TCPSocket, which saves me much of the drudgery of communicating with *nix. However, the further down the rabbit hole you go, the less documentation there is. Also, I wanted to learn. Furthermore, I am Groot.
 
+## You forgot about [insert something important]. It went right over your head.
+Nothing goes over my head. My reflexes are too fast. I would catch it.
+
 ## How do I eat Tastynoodles?
 If you feel like trying it out, clone this project, create an alias in your bash profile like the following: alias tasty="/pathtowhereeveryouputthings/tastynoodles.rb". Don't forget to source your bash_profile. Then you can run the following commands:
 * **tasty start** starts Tastynoodles, runs it as a daemon.
