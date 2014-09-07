@@ -3,24 +3,26 @@
 # Author: Branden Tanga
 # Email: branden.tanga@gmail.com
 require "socket"
+#require "cgi"
 
 # Tasty Noodles itself
 #
 class TastyNoodles
+  MAX_FOR_RANDOMIZER = 1000000000000000000 # <-- this is close to the max size of Fixnum
   def initialize
+    #@cgi = CGI.new("html4")
+    @sessions = {}
+    # For sessions, houskeeping key=value pairs are Domain, Path, Max-Age, Secure, and Expires
+    # For sessions, Set-Cookie: name2=value2; Expires=Wed, 09 Jun 2021 10:18:14 GMT becomes
+    # { :tastynoodles_983709713299503548 =>  }
+    # @randomizer = Random.new(Time.now.to_i) <-- only needed if Tastynoodles ever needs
+    # to set it's own cookies.
+    
     # Right now, host is hard set. This should be something that is read from a config file
     @host = "localhost"
     @http_version = "HTTP/1.1"
     @known_content_types = ["html", "javascript", "text", "jpg", "jpeg", "png", "gif"]
-    @hardcoded_response = "#{@http_version} 200 OK\r\n" +
-    'Date: Tue, 26 Aug 2014 22:38:34 GMT\r\n'+
-    'Server: Tastynoodles/0.01 (OSX)\r\n'+
-    'Last-Modified: Tue, 26 Aug 2014 23:11:55 GMT\r\n'+
-    'ETag: "3f80f-1b6-3e1cb03b"\r\n'+ # What is an etag?
-    'Content-Type: text/html; charset=UTF-8\r\n'+
-    'Content-Length: 60\r\n'+
-    'Accept-Ranges: bytes\r\n'+
-    'Connection: close'
+    @cookies = ""
   end
   
   # Custom logger, appends to the file 'status' in the tastynoodles directory.
@@ -42,22 +44,23 @@ class TastyNoodles
     server = TCPServer.new "localhost", 2000 #<-- bind to port 2000
     loop do 
       Thread.start(server.accept) do |client|
-        request = client.gets.chomp.split(" ")
+        temp = client.gets("\r\n\r\n")
+        log "incoming request == " + temp
+        request = temp.chomp.split("\r\n")
+        #request = client.gets.chomp.split(" ") <-- switch back to this
         #interact_by_telnet client
-        type = request[0]
+        type = request[0].split(" ")[0]
+        @cookies = request.select{|x| x.include?("Cookie")}[0]
+        log "type == #{type}"
         case type
         when "HEAD"
-          #log "Error 405, method not allowed"
-          #client.print generate_http_error_message(:e405)
           response = do_head(request)
           client.print response
           log "HEAD #{request[1]}"
         when "GET"
-          #response = @hardcoded_response + '\r\n\r\n' + do_get(request)
-          #client.print do_get(request) #<-- this works, but it has no header???
           response = do_get(request)
           client.print response
-          log "GET #{request[1]}"
+          log "GET #{request[0]}"
         when "OPTIONS"
           log "Error 405, method not allowed"
           client.print generate_http_error_message(:e405)
@@ -105,18 +108,24 @@ class TastyNoodles
     # if this is valid, then proceed
     # Host is mandatory, and either Content-Length or Transfer-Encoding.
     message = nil
-    if request[2] == @http_version
+    request_header = request[0].split(" ")
+    log "request_header == #{request_header}"
+    if request_header[2] == @http_version
       log "do_get request == #{request.to_s}"
-      url = request[1]
+      url = request_header[1]
       url = url[1, url.length] if url.start_with? "/" # strip leading /
       begin
         message = File.read(url) # if not found, read returns nil
-        header = "#{@http_version} 200 OK\r\n" +
+        response_header = "#{@http_version} 200 OK\r\n" +
                   generate_common_response_header_fields(url, message) +
+                  # Domain, Path, Max-Age, Secure, and Expires
+                  #"Set-Cookie: tastynoodles=true;\r\n" +
+                  #"Set-Cookie: visit_count=1;\r\n" + 
+                  "#{@cookies}\r\n" +
                   "Connection: close\r\n\r\n"
-        log header + message
+        log "response == " + response_header + message
         #return header + message
-        return (get_or_head == :get ? header + message : header)
+        return (get_or_head == :get ? response_header + message : response_header)
       rescue Errno::ENOENT => e # File not found
         log e.message
         return generate_http_error_message(:e404)
@@ -175,6 +184,27 @@ class TastyNoodles
   #
   def generate_simple_html_page(content_of_body)
     return "<html><head></head><body>" + content_of_body + "</body></html>"
+  end
+  
+  # This method accepts a request as an array of parameters,
+  # and returns an array of cookies as a hash. A hash being unordered is acceptable,
+  # because per the http spec, cookies are supposed to be unordered.
+  def get_request_cookies(request)
+    
+  end
+  
+  # This method generates the session cookie 
+  #
+  def generate_session_cookie
+    return "tastynoodles=session_id:#{generate_random_fixnum}"
+  end
+  
+  # This method generates a random fixnum that is near the maximum size of
+  # fixnum. This is intended to be used to help keep track of independent
+  # sessions with minimal chance of collisions.
+  #
+  def generate_random_fixnum
+    return @randomizer.rand(MAX_FOR_RANDOMIZER)
   end
   
   # A testing method which allows you to send and recieve simple messages
