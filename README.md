@@ -19,7 +19,7 @@ For my own edification, I wanted to write my own webserver. Tastynoodles is just
 
 ## What will Tastynoodles do in the future?
 ### Near future:
-* ~~Support cookies (partial implementation done, not merged with master branch yet)~~
+* **DONE** ~~Support cookies (partial implementation done, not merged with master branch yet)~~
 * Support all the HTTP request types, GET, HEAD, POST, PUT, DELETE, OPTIONS, TRACE
 * Support all common HTTP error types
 
