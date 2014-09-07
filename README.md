@@ -15,10 +15,11 @@ For my own edification, I wanted to write my own webserver. Tastynoodles is just
 * Can accept HEAD and GET requests, can respond with 200 OK and send requested files
 * Can work with common text or image files: text/text, text/javascript, text/html, image/jpg, image/png, image/gif
 * Can send the following errors: 404, 405, 501, 505
+* Cookies, client side storage only
 
 ## What will Tastynoodles do in the future?
 ### Near future:
-* Support cookies (partial implementation done, not merged with master branch yet)
+* ~~Support cookies (partial implementation done, not merged with master branch yet)~~
 * Support all the HTTP request types, GET, HEAD, POST, PUT, DELETE, OPTIONS, TRACE
 * Support all common HTTP error types
 
