@@ -34,7 +34,7 @@ For my own edification, I wanted to write my own webserver. Tastynoodles is just
 
 ## Will Tastynoodles ever do any of the following?
 * Reverse proxy
-* CGI support for other languages
+* FastCGI
 * Advanced URL rewriting
 * Load balancing
 * Caching
