@@ -15,21 +15,14 @@ class TastyNoodles
     # For sessions, houskeeping key=value pairs are Domain, Path, Max-Age, Secure, and Expires
     # For sessions, Set-Cookie: name2=value2; Expires=Wed, 09 Jun 2021 10:18:14 GMT becomes
     # { :tastynoodles_983709713299503548 =>  }
-    @randomizer = Random.new(Time.now.to_i)
+    # @randomizer = Random.new(Time.now.to_i) <-- only needed if Tastynoodles ever needs
+    # to set it's own cookies.
     
     # Right now, host is hard set. This should be something that is read from a config file
     @host = "localhost"
     @http_version = "HTTP/1.1"
     @known_content_types = ["html", "javascript", "text", "jpg", "jpeg", "png", "gif"]
-    @hardcoded_response = "#{@http_version} 200 OK\r\n" +
-    'Date: Tue, 26 Aug 2014 22:38:34 GMT\r\n'+
-    'Server: Tastynoodles/0.01 (OSX)\r\n'+
-    'Last-Modified: Tue, 26 Aug 2014 23:11:55 GMT\r\n'+
-    'ETag: "3f80f-1b6-3e1cb03b"\r\n'+ # What is an etag?
-    'Content-Type: text/html; charset=UTF-8\r\n'+
-    'Content-Length: 60\r\n'+
-    'Accept-Ranges: bytes\r\n'+
-    'Connection: close'
+    @cookies = ""
   end
   
   # Custom logger, appends to the file 'status' in the tastynoodles directory.
@@ -57,6 +50,7 @@ class TastyNoodles
         #request = client.gets.chomp.split(" ") <-- switch back to this
         #interact_by_telnet client
         type = request[0].split(" ")[0]
+        @cookies = request.select{|x| x.include?("Cookie")}[0]
         log "type == #{type}"
         case type
         when "HEAD"
@@ -127,6 +121,7 @@ class TastyNoodles
                   # Domain, Path, Max-Age, Secure, and Expires
                   #"Set-Cookie: tastynoodles=true;\r\n" +
                   #"Set-Cookie: visit_count=1;\r\n" + 
+                  "#{@cookies}\r\n" +
                   "Connection: close\r\n\r\n"
         log "response == " + response_header + message
         #return header + message
