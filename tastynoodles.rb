@@ -15,7 +15,7 @@ class TastyNoodles
     # For sessions, houskeeping key=value pairs are Domain, Path, Max-Age, Secure, and Expires
     # For sessions, Set-Cookie: name2=value2; Expires=Wed, 09 Jun 2021 10:18:14 GMT becomes
     # { :tastynoodles_983709713299503548 =>  }
-    # @randomizer = Random.new(Time.now.to_i) <-- only needed if Tastynoodles ever needs
+    @randomizer = Random.new(Time.now.to_i)# <-- only needed if Tastynoodles ever needs
     # to set it's own cookies.
     
     # Right now, host is hard set. This should be something that is read from a config file

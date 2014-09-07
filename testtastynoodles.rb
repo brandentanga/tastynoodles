@@ -72,4 +72,7 @@ class TestTastyNoodles < Minitest::Unit::TestCase
   def test_generate_session_cookie
     skip "test_generate_session_cookie for now"
   end
+  def test_do_post
+    skip "skip test_do_post for now"
+  end
 end
