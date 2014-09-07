@@ -9,3 +9,6 @@ index.html
 
 ## the current status of tastynoodles
 status
+
+## .swp files for vim
+*.swp
