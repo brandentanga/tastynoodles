@@ -20,6 +20,7 @@ For my own edification, I wanted to write my own webserver. Tastynoodles is just
 ## What will Tastynoodles do in the future?
 ### Near future:
 * **DONE** ~~Support cookies (partial implementation done, not merged with master branch yet)~~
+* CGI support for Ruby
 * Support all the HTTP request types, GET, HEAD, POST, PUT, DELETE, OPTIONS, TRACE
 * Support all common HTTP error types
 
@@ -28,7 +29,7 @@ For my own edification, I wanted to write my own webserver. Tastynoodles is just
 * Refactoring because I'm sure the code will be ugly by then
 
 ### Long term:
-* CGI support for Ruby, possibly look at being Rack compliant
+* Possibly look at being Rack compliant
 * SSL support
 
 ## Will Tastynoodles ever do any of the following?
