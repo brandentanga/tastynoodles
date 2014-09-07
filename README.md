@@ -49,7 +49,7 @@ Yes, I use some of them, like Process.daemon, and TCPSocket, which saves me much
 Nothing goes over my head. My reflexes are too fast. I would catch it.
 
 ## How do I eat Tastynoodles?
-If you feel like trying it out, clone this project, create an alias in your bash profile like the following: alias tasty="/pathtowhereeveryouputthings/tastynoodles.rb". Don't forget to source your bash_profile. Then you can run the following commands:
+If you feel like trying it out, grab the latest [release](https://github.com/brandentanga/tastynoodles/releases), or clone this project. Then create an alias in your bash profile like the following: alias tasty="/pathtowhereeveryouputthings/tastynoodles.rb". Don't forget to source your bash_profile. Then you can run the following commands:
 * **tasty start** starts Tastynoodles, runs it as a daemon.
 * **tasty stop** stops/kills Tastynoodles. 
 * **tasty who** essentially a ps aux | grep tasty to look at all the tasty processes going on
