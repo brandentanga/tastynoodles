@@ -1,0 +1,19 @@
+<html>
+<head>
+</head>
+<body>
+Hello World 
+<script type="text/javascript">
+  var all_cookies = document.cookie
+  //alert(all_cookies)-->
+  //document.cookie = "tastynoodles2=true"
+  //document.cookie = "tastynoodles=1234"
+  document.cookie = "tastynoodles3=asdf"
+  document.write(all_cookies)
+</script>
+<form name="dowork" action="cgi/dowork.rb" method="post">
+  Name: <input type="text" name="name">
+  <input type="submit" value="Submit">
+</form>
+</body>
+</html>
