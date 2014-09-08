@@ -22,7 +22,7 @@ class TastyNoodles
     @host = "localhost"
     @http_version = "HTTP/1.1"
     @known_content_types = ["html", "javascript", "text", "jpg", "jpeg", "png", "gif"]
-    @cookies = ""
+    @cookies = nil
   end
   
   # Custom logger, appends to the file 'status' in the tastynoodles directory.
@@ -51,6 +51,7 @@ class TastyNoodles
         #interact_by_telnet client
         type = request[0].split(" ")[0]
         @cookies = request.select{|x| x.include?("Cookie")}[0]
+        @cookies.chomp! if @cookies != nil
         log "type == #{type}"
         case type
         when "HEAD"
@@ -121,7 +122,7 @@ class TastyNoodles
                   # Domain, Path, Max-Age, Secure, and Expires
                   #"Set-Cookie: tastynoodles=true;\r\n" +
                   #"Set-Cookie: visit_count=1;\r\n" + 
-                  "#{@cookies}\r\n" +
+                  (@cookies == nil ? "" : "#{@cookies}\r\n") +
                   "Connection: close\r\n\r\n"
         log "response == " + response_header + message
         #return header + message
