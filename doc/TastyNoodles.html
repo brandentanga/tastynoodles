@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class TastyNoodles - TastyNoodles, a webserver</title>
+
+<link href="./fonts.css" rel="stylesheet">
+<link href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/navigation.js"></script>
+<script src="./js/search_index.js"></script>
+<script src="./js/search.js"></script>
+<script src="./js/searcher.js"></script>
+<script src="./js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link"><a href="Object.html">Object</a>
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-do_get">#do_get</a>
+    
+    <li ><a href="#method-i-do_head">#do_head</a>
+    
+    <li ><a href="#method-i-generate_common_response_header_fields">#generate_common_response_header_fields</a>
+    
+    <li ><a href="#method-i-generate_http_error_message">#generate_http_error_message</a>
+    
+    <li ><a href="#method-i-generate_random_fixnum">#generate_random_fixnum</a>
+    
+    <li ><a href="#method-i-generate_session_cookie">#generate_session_cookie</a>
+    
+    <li ><a href="#method-i-generate_simple_html_page">#generate_simple_html_page</a>
+    
+    <li ><a href="#method-i-generate_simple_html_page_for_error">#generate_simple_html_page_for_error</a>
+    
+    <li ><a href="#method-i-get_request_cookies">#get_request_cookies</a>
+    
+    <li ><a href="#method-i-interact_by_telnet">#interact_by_telnet</a>
+    
+    <li ><a href="#method-i-log">#log</a>
+    
+    <li ><a href="#method-i-test">#test</a>
+    
+    <li ><a href="#method-i-work">#work</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-TastyNoodles">
+  <h1 id="class-TastyNoodles" class="class">
+    class TastyNoodles
+  </h1>
+
+  <section class="description">
+    
+<p>Tasty Noodles itself</p>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <section class="constants-list">
+      <header>
+        <h3>Constants</h3>
+      </header>
+      <dl>
+      
+        <dt id="MAX_FOR_RANDOMIZER">MAX_FOR_RANDOMIZER
+        
+        <dd><p>This constant is close to the max size of Fixnum, and is used to determine
+the  cap for the random int generator.</p>
+        
+      
+      </dl>
+    </section>
+    
+
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 15</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>
+  <span class="ruby-comment">#@cgi = CGI.new(&quot;html4&quot;)</span>
+  <span class="ruby-ivar">@sessions</span> = {}
+  <span class="ruby-comment"># For sessions, houskeeping key=value pairs are Domain, Path, Max-Age, Secure, and Expires</span>
+  <span class="ruby-comment"># For sessions, Set-Cookie: name2=value2; Expires=Wed, 09 Jun 2021 10:18:14 GMT becomes</span>
+  <span class="ruby-comment"># { :tastynoodles_983709713299503548 =&gt;  }</span>
+  <span class="ruby-ivar">@randomizer</span> = <span class="ruby-constant">Random</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_i</span>)<span class="ruby-comment"># &lt;-- only needed if Tastynoodles ever needs</span>
+  <span class="ruby-comment"># to set it&#39;s own cookies.</span>
+  
+  <span class="ruby-comment"># Right now, host is hard set. This should be something that is read from a config file</span>
+  <span class="ruby-ivar">@host</span> = <span class="ruby-string">&quot;localhost&quot;</span>
+  <span class="ruby-ivar">@http_version</span> = <span class="ruby-string">&quot;HTTP/1.1&quot;</span>
+  <span class="ruby-ivar">@known_content_types</span> = [<span class="ruby-string">&quot;html&quot;</span>, <span class="ruby-string">&quot;javascript&quot;</span>, <span class="ruby-string">&quot;text&quot;</span>, <span class="ruby-string">&quot;jpg&quot;</span>, <span class="ruby-string">&quot;jpeg&quot;</span>, <span class="ruby-string">&quot;png&quot;</span>, <span class="ruby-string">&quot;gif&quot;</span>]
+  <span class="ruby-ivar">@cookies</span> = <span class="ruby-keyword">nil</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-do_get" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">do_get</span><span
+            class="method-args">(request, get_or_head = :get)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>This method handles a get request.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="do_get-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 116</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">do_get</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">get_or_head</span> = <span class="ruby-value">:get</span>)
+  <span class="ruby-comment"># if this is valid, then proceed</span>
+  <span class="ruby-comment"># Host is mandatory, and either Content-Length or Transfer-Encoding.</span>
+  <span class="ruby-identifier">message</span> = <span class="ruby-keyword">nil</span>
+  <span class="ruby-identifier">request_header</span> = <span class="ruby-identifier">request</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot; &quot;</span>)
+  <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;request_header == #{request_header}&quot;</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">request_header</span>[<span class="ruby-value">2</span>] <span class="ruby-operator">==</span> <span class="ruby-ivar">@http_version</span>
+    <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;do_get request == #{request.to_s}&quot;</span>
+    <span class="ruby-identifier">url</span> = <span class="ruby-identifier">request_header</span>[<span class="ruby-value">1</span>]
+    <span class="ruby-identifier">url</span> = <span class="ruby-identifier">url</span>[<span class="ruby-value">1</span>, <span class="ruby-identifier">url</span>.<span class="ruby-identifier">length</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">url</span>.<span class="ruby-identifier">start_with?</span> <span class="ruby-string">&quot;/&quot;</span> <span class="ruby-comment"># strip leading /</span>
+    <span class="ruby-keyword">begin</span>
+      <span class="ruby-identifier">message</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-node">&quot;markup/#{url}&quot;</span>) <span class="ruby-comment"># if not found, read returns nil</span>
+      <span class="ruby-identifier">response_header</span> = <span class="ruby-node">&quot;#{@http_version} 200 OK\r\n&quot;</span> <span class="ruby-operator">+</span>
+                <span class="ruby-identifier">generate_common_response_header_fields</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">message</span>) <span class="ruby-operator">+</span>
+                <span class="ruby-comment"># Domain, Path, Max-Age, Secure, and Expires</span>
+                <span class="ruby-comment">#&quot;Set-Cookie: tastynoodles=true;\r\n&quot; +</span>
+                <span class="ruby-comment">#&quot;Set-Cookie: visit_count=1;\r\n&quot; + </span>
+                (<span class="ruby-ivar">@cookies</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">nil</span> <span class="ruby-operator">?</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-node">&quot;#{@cookies}\r\n&quot;</span>) <span class="ruby-operator">+</span>
+                <span class="ruby-string">&quot;Connection: close\r\n\r\n&quot;</span>
+      <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;response == &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">response_header</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">message</span>
+      <span class="ruby-comment">#return header + message</span>
+      <span class="ruby-keyword">return</span> (<span class="ruby-identifier">get_or_head</span> <span class="ruby-operator">==</span> <span class="ruby-value">:get</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">response_header</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">message</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">response_header</span>)
+    <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Errno</span><span class="ruby-operator">::</span><span class="ruby-constant">ENOENT</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span> <span class="ruby-comment"># File not found</span>
+      <span class="ruby-identifier">log</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>
+      <span class="ruby-keyword">return</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e404</span>)
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">else</span> <span class="ruby-comment"># error 505 http version not supported.</span>
+    <span class="ruby-comment">#log request</span>
+    <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;in else&quot;</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e505</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-do_head" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">do_head</span><span
+            class="method-args">(request)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>This method handles a head request. It is basically a pass through to <a
+href="TastyNoodles.html#method-i-do_get">#do_get</a>, since a head request
+is identical to a get, except that there is no content in a response to a
+head request.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="do_head-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 110</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">do_head</span>(<span class="ruby-identifier">request</span>)
+  <span class="ruby-identifier">do_get</span>(<span class="ruby-identifier">request</span>, <span class="ruby-value">:head</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-generate_common_response_header_fields" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">generate_common_response_header_fields</span><span
+            class="method-args">(url, message)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Generate the header fields used across all response headers</p>
+          
+          
+
+          
+          <div class="method-source-code" id="generate_common_response_header_fields-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 151</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_common_response_header_fields</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">message</span>)
+  <span class="ruby-identifier">content_type</span> = <span class="ruby-identifier">url</span>[<span class="ruby-identifier">url</span>.<span class="ruby-identifier">rindex</span>(<span class="ruby-string">&quot;.&quot;</span>) <span class="ruby-operator">+</span> <span class="ruby-value">1</span>, <span class="ruby-identifier">url</span>.<span class="ruby-identifier">length</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">url</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-string">&quot;.&quot;</span>)
+  <span class="ruby-identifier">content_type</span> <span class="ruby-operator">||=</span> <span class="ruby-string">&quot;root&quot;</span> <span class="ruby-comment"># if there&#39;s no .html for example url rewrite engine will solve this</span>
+  <span class="ruby-identifier">length_or_encoding</span> = <span class="ruby-value">:content_length</span>
+  <span class="ruby-comment">#insert_me = (length_or_encoding == :content_length ? &quot;Content-Length: #{message.bytesize}\r\n\r\n&quot;)</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;Date: #{Time.now.utc.strftime(&quot;%a, %d %b %Y %H:%M:%S GMT&quot;)}\r\n&quot;</span> <span class="ruby-operator">+</span> 
+          <span class="ruby-string">&quot;Server: TastyNoodles/0.1\r\n&quot;</span> <span class="ruby-operator">+</span>
+          <span class="ruby-node">&quot;Content-Type: #{@known_content_types.find_index(content_type) != nil ? content_type : &quot;unknown&quot; }\r\n&quot;</span> <span class="ruby-operator">+</span> 
+          (<span class="ruby-identifier">length_or_encoding</span> <span class="ruby-operator">==</span> <span class="ruby-value">:content_length</span> <span class="ruby-operator">?</span> <span class="ruby-node">&quot;Content-Length: #{message.bytesize}&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-node">&quot;Transfer-Encoding: #{message.to_s}&quot;</span>) <span class="ruby-operator">+</span>
+          <span class="ruby-string">&quot;\r\n&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-generate_http_error_message" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">generate_http_error_message</span><span
+            class="method-args">(type)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>This method is responsible for generating markup for all http error
+messages to be sent back to the client.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="generate_http_error_message-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 166</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-identifier">type</span>)
+  <span class="ruby-comment"># Note that ruby symbols cannot start with a digit, thus the &#39;e&#39;</span>
+  <span class="ruby-keyword">case</span> <span class="ruby-identifier">type</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:e404</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">generate_simple_html_page_for_error</span> <span class="ruby-string">&quot;404 Not found&quot;</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:e505</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">generate_simple_html_page_for_error</span> <span class="ruby-string">&quot;505 HTTP version not supported&quot;</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:e405</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">generate_simple_html_page_for_error</span> <span class="ruby-string">&quot;405 Method not allowed&quot;</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:e501</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">generate_simple_html_page_for_error</span> <span class="ruby-string">&quot;501 Not a valid request type&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;The server is trying to send an unknown http error message to the client. #{type}&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-generate_random_fixnum" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">generate_random_fixnum</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>This method generates a random fixnum that is near the maximum size of
+fixnum. This is intended to be used to help keep track of independent
+sessions with minimal chance of collisions.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="generate_random_fixnum-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 215</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_random_fixnum</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-ivar">@randomizer</span>.<span class="ruby-identifier">rand</span>(<span class="ruby-constant">MAX_FOR_RANDOMIZER</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-generate_session_cookie" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">generate_session_cookie</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>This method generates the session cookie</p>
+          
+          
+
+          
+          <div class="method-source-code" id="generate_session_cookie-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 207</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_session_cookie</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;tastynoodles=session_id:#{generate_random_fixnum}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-generate_simple_html_page" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">generate_simple_html_page</span><span
+            class="method-args">(content_of_body)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>This method generates html, head, and body tags for use in other methods.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="generate_simple_html_page-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 194</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_simple_html_page</span>(<span class="ruby-identifier">content_of_body</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-string">&quot;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">content_of_body</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;&lt;/body&gt;&lt;/html&gt;&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-generate_simple_html_page_for_error" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">generate_simple_html_page_for_error</span><span
+            class="method-args">(info_string)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>This method simplifies the drudgery of creating markup for error pages that
+are  almost always nearly identical.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="generate_simple_html_page_for_error-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 185</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_simple_html_page_for_error</span>(<span class="ruby-identifier">info_string</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;#{@http_version} #{info_string}. No tasty noodles for you.\r\n&quot;</span> <span class="ruby-operator">+</span> 
+          <span class="ruby-string">&quot;Connection: close\r\n\r\n&quot;</span> <span class="ruby-operator">+</span> 
+          <span class="ruby-identifier">generate_simple_html_page</span>(<span class="ruby-node">&quot;#{info_string}. No tasty noodles for you.&quot;</span> <span class="ruby-operator">+</span>
+          <span class="ruby-string">&quot;&lt;br /&gt;&lt;img src=http://i.imgur.com/ODaIazU.gif&gt;&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-get_request_cookies" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">get_request_cookies</span><span
+            class="method-args">(request)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>This method accepts a request as an array of parameters, and returns an
+array of cookies as a hash. A hash being unordered is acceptable, because
+per the http spec, cookies are supposed to be unordered.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="get_request_cookies-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 201</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">get_request_cookies</span>(<span class="ruby-identifier">request</span>)
+  
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-interact_by_telnet" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">interact_by_telnet</span><span
+            class="method-args">(client)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>A testing method which allows you to send and recieve simple messages
+through telnet</p>
+          
+          
+
+          
+          <div class="method-source-code" id="interact_by_telnet-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 222</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">interact_by_telnet</span>(<span class="ruby-identifier">client</span>)
+    <span class="ruby-identifier">client</span>.<span class="ruby-identifier">puts</span> <span class="ruby-string">&quot;Hello World&quot;</span>
+    <span class="ruby-identifier">request</span> = <span class="ruby-identifier">client</span>.<span class="ruby-identifier">gets</span>.<span class="ruby-identifier">chomp</span>
+    <span class="ruby-identifier">client</span>.<span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You just entered #{request}. Do a tasty status to see your request.&quot;</span>
+    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;./status&quot;</span>, <span class="ruby-string">&quot;w&quot;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;#{request}\n&quot;</span>) }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-log" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">log</span><span
+            class="method-args">(message)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Custom logger, appends to the file &#39;status&#39; in the tastynoodles
+directory. When the server exits, this file is overwritten.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="log-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 34</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">log</span>(<span class="ruby-identifier">message</span>)
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;./status&quot;</span>, <span class="ruby-string">&quot;a&quot;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">message</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;\n&quot;</span>) }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-test" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">test</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>A testing method, that currently outputs the RUBY_VERSION. It is no longer
+used, like the human appendix.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="test-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">test</span>
+  <span class="ruby-comment">#Process.daemon</span>
+  <span class="ruby-comment">#puts Process.pid</span>
+  <span class="ruby-comment">#puts Process.getpgrp</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-constant">RUBY_VERSION</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-work" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">work</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>The main method which loops indefinitely while tastynoodles is running.
+Inbound requests get processed in this method.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="work-source">
+            <pre><span class="ruby-comment"># File lib/tastynoodles.rb, line 51</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">work</span>
+  <span class="ruby-identifier">server</span> = <span class="ruby-constant">TCPServer</span>.<span class="ruby-identifier">new</span> <span class="ruby-string">&quot;localhost&quot;</span>, <span class="ruby-value">2000</span> <span class="ruby-comment">#&lt;-- bind to port 2000</span>
+  <span class="ruby-identifier">loop</span> <span class="ruby-keyword">do</span> 
+    <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">start</span>(<span class="ruby-identifier">server</span>.<span class="ruby-identifier">accept</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">client</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">temp</span> = <span class="ruby-identifier">client</span>.<span class="ruby-identifier">gets</span>(<span class="ruby-string">&quot;\r\n\r\n&quot;</span>)
+      <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;incoming request == &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">temp</span>
+      <span class="ruby-identifier">request</span> = <span class="ruby-identifier">temp</span>.<span class="ruby-identifier">chomp</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\r\n&quot;</span>)
+      <span class="ruby-comment">#request = client.gets.chomp.split(&quot; &quot;) &lt;-- switch back to this</span>
+      <span class="ruby-comment">#interact_by_telnet client</span>
+      <span class="ruby-identifier">type</span> = <span class="ruby-identifier">request</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot; &quot;</span>)[<span class="ruby-value">0</span>]
+      <span class="ruby-ivar">@cookies</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-string">&quot;Cookie&quot;</span>)}[<span class="ruby-value">0</span>]
+      <span class="ruby-ivar">@cookies</span>.<span class="ruby-identifier">chomp!</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@cookies</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword">nil</span>
+      <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;type == #{type}&quot;</span>
+      <span class="ruby-keyword">case</span> <span class="ruby-identifier">type</span>
+      <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;HEAD&quot;</span>
+        <span class="ruby-identifier">response</span> = <span class="ruby-identifier">do_head</span>(<span class="ruby-identifier">request</span>)
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">response</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;HEAD #{request[1]}&quot;</span>
+      <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;GET&quot;</span>
+        <span class="ruby-identifier">response</span> = <span class="ruby-identifier">do_get</span>(<span class="ruby-identifier">request</span>)
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">response</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;GET #{request[0]}&quot;</span>
+      <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;OPTIONS&quot;</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;Error 405, method not allowed&quot;</span>
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e405</span>)
+      <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;TRACE&quot;</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;Error 405, method not allowed&quot;</span>
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e405</span>)
+      <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;POST&quot;</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;Error 405, method not allowed&quot;</span>
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e405</span>)
+      <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;PUT&quot;</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;Error 405, method not allowed&quot;</span>
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e405</span>)
+      <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;DELETE&quot;</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;Error 405, method not allowed&quot;</span>
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e405</span>)
+      <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;TRACE&quot;</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;Error 405, method not allowed&quot;</span>
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e405</span>)
+      <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;CONNECT&quot;</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;Error 405, method not allowed&quot;</span>
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e405</span>)
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-comment"># not a valid request type. What to do here?</span>
+        <span class="ruby-comment"># Error 501 not implemented if it is an unknown or unimplemented request type</span>
+        <span class="ruby-identifier">log</span> <span class="ruby-string">&quot;Error 501, not a valid request type&quot;</span>
+        <span class="ruby-comment"># Note that ruby symbols cannot start with a digit, thus the &#39;e&#39;</span>
+        <span class="ruby-identifier">client</span>.<span class="ruby-identifier">print</span> <span class="ruby-identifier">generate_http_error_message</span>(<span class="ruby-value">:e501</span>)
+      <span class="ruby-keyword">end</span>
+      <span class="ruby-identifier">client</span>.<span class="ruby-identifier">close</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
