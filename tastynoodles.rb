@@ -2,12 +2,15 @@
 
 # Author: Branden Tanga
 # Email: branden.tanga@gmail.com
+# :title: TastyNoodles, a webserver
 require "socket"
 #require "cgi"
 
 # Tasty Noodles itself
 #
 class TastyNoodles
+  # This constant is close to the max size of Fixnum, and is used to determine the 
+  # cap for the random int generator.
   MAX_FOR_RANDOMIZER = 1000000000000000000 # <-- this is close to the max size of Fixnum
   def initialize
     #@cgi = CGI.new("html4")
@@ -31,6 +34,10 @@ class TastyNoodles
   def log(message)
     File.open("./status", "a") { |f| f.write(message + "\n") }
   end
+  
+  # A testing method, that currently outputs the RUBY_VERSION. It is no longer
+  # used, like the human appendix.
+  #
   def test
     #Process.daemon
     #puts Process.pid
@@ -39,6 +46,7 @@ class TastyNoodles
   end
   
   # The main method which loops indefinitely while tastynoodles is running.
+  # Inbound requests get processed in this method.
   #
   def work
     server = TCPServer.new "localhost", 2000 #<-- bind to port 2000
